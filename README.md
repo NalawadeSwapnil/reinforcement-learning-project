@@ -1,96 +1,165 @@
-# Project Name
+# ConnectX Reinforcement Learning: Q-Learning vs SARSA(λ)
 
-A brief description of what this project does and who it is for.
+A comparative study of two reinforcement learning algorithms — Q-learning and SARSA(λ) — applied to the ConnectX game environment.
+
+This project trains agents to learn optimal strategies through interaction with the environment and evaluates their performance against random, rule-based (Negamax), and self-play opponents.
+
+---
 
 ## Overview
 
-Provide a slightly longer explanation of the project.  
-Explain the problem it solves and the purpose behind it.
+This project implements and evaluates two reinforcement learning algorithms:
 
-## Features
+- Q-learning (Off-policy)
+- SARSA(λ) (On-policy with eligibility traces)
 
-- Feature one
-- Feature two
-- Feature three
+The environment is a modified ConnectX game:
 
-## Installation
+- Grid size: 4 rows × 5 columns
+- Win condition: Connect 3 tokens
+- Reward system:
+  - Win = +1
+  - Loss = -1
+  - Draw = 0
 
-Clone the repository:
+Agents were trained in two phases:
+1. Against a Random agent
+2. Against a Negamax agent (deterministic rule-based opponent)
 
-```bash
-git clone https://github.com/your-username/project-name.git
-cd project-name
+Performance was measured using reward curves, evaluation matches, and learned Q-table heatmaps.
+
+---
+
+## Algorithms Implemented
+
+### Q-Learning
+- Off-policy learning algorithm
+- Updates Q-values assuming optimal future action
+- Faster convergence
+- More aggressive and reward-seeking
+
+### SARSA(λ)
+- On-policy learning algorithm
+- Uses eligibility traces to reinforce recent state-action pairs
+- More stable and gradual learning
+- Learns based on actual actions taken
+
+---
+
+## Training Setup
+
+Each agent was trained under the following conditions:
+
+| Agent        | Opponent  | Role        | Episodes |
+|--------------|-----------|------------|----------|
+| Q-learning   | Random    | P1 & P2    | 1000 each |
+| Q-learning   | Negamax   | P1 & P2    | 1000 each |
+| SARSA(λ)     | Random    | P1 & P2    | 1000 each |
+| SARSA(λ)     | Negamax   | P1 & P2    | 1000 each |
+
+Additional details:
+- Epsilon-greedy exploration (epsilon decayed from 1.0)
+- Legal action handling to prevent invalid moves
+- Class-based agent structure with `act()` and `learn()` methods
+
+---
+
+## Results Summary
+
+### Performance vs Random Agent
+
+After training against Negamax:
+
+**Q-learning**
+- Win rate improved from 50% → 56%
+- Strong improvement as Player 2
+- Slight drop when starting first
+
+**SARSA(λ)**
+- Win rate improved from 54% → 56%
+- More stable performance
+- Slight drop in self-play after stronger training
+
+---
+
+### Performance vs Negamax
+
+Both agents initially struggled against Negamax due to its optimal deterministic policy.
+
+After training:
+- Q-learning improved from 4% → 8% win rate
+- SARSA(λ) improved from 2% → 8% win rate
+
+---
+
+### Head-to-Head Evaluation
+
+100 evaluation games were played in both directions.
+
+- Q-learning won 68/100 games against SARSA(λ)
+- SARSA(λ) won 64/100 games in reverse setup
+- No draws occurred
+
+Q-learning demonstrated stronger direct competitive performance.
+
+---
+
+## Learned Policies (Heatmap Insights)
+
+Both agents strongly preferred the center column (Column 2), indicating learning of optimal central positioning.
+
+- Q-learning showed sharper concentration in Columns 1–3
+- SARSA(λ) displayed more evenly distributed column preferences
+
+This reflects:
+- Q-learning → more aggressive exploitation
+- SARSA(λ) → more cautious exploration
+
+---
+
+## Key Takeaways
+
+- Q-learning converges faster but may overestimate early values.
+- SARSA(λ) provides more stable and realistic learning behavior.
+- Training across both player roles is essential for fair evaluation.
+- Legal move handling significantly improves training stability.
+
+---
+
+## Technologies Used
+
+- Python
+- Kaggle Environments (ConnectX)
+- NumPy
+- Matplotlib
+
+---
+
+## How to Run
+
+1. Install dependencies:
+```
+pip install kaggle-environments numpy matplotlib
 ```
 
-Install dependencies:
-
-```bash
-# Node.js example
-npm install
-
-# Python example
-pip install -r requirements.txt
+2. Run the notebook or Python script:
 ```
-
-## Usage
-
-Run the project:
-
-```bash
-# Node.js example
-npm start
-
-# Python example
 python main.py
 ```
+(or open and execute the Jupyter notebook)
 
-Explain what the user should expect when running the application.
+---
 
-## Project Structure
+## References
 
-```
-project-name/
-│
-├── src/              # Source code
-├── tests/            # Test files
-├── docs/             # Documentation
-├── .gitignore
-├── README.md
-└── main file
-```
+- Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning: An Introduction. MIT Press.
+- Alderton, E., Wopat, E., & Koffman, J. (2021). Reinforcement Learning for Connect Four.
+- Kochenderfer, M. J. (2015). Decision Making Under Uncertainty.
+- Kaggle Environments API Documentation
 
-## Configuration
-
-Explain any environment variables or configuration files required.
-
-Example:
-
-```
-ENV_VARIABLE=value
-```
-
-## Testing
-
-Run tests with:
-
-```bash
-npm test
-# or
-pytest
-```
-
-## Roadmap
-
-- Add additional features
-- Improve performance
-- Increase test coverage
-- Improve documentation
-
-## License
-
-This project is licensed under the MIT License.
+---
 
 ## Author
 
-Your Name  
-https://github.com/your-username
+Swapnil S Nalawade  
+
